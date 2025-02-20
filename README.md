@@ -2,7 +2,7 @@
 
 This is a simple prototype showing an easier-to-user government information center (GIC, Sri Lanka) using a new AI-assited content review policy and RAG search on top. 
 
-It distills the procedures of various government instutes into simple guides. As befits a demo, it's a simple HTML file that access a bunch of markdown locally. 
+It distills the procedures of various government instutes into simple guides. As befits a demo, it's a simple HTML file that access a bunch of markdown locally. Uses Anthropic's Claude; for comparison purposes, I also present here the simple search variant that does not need any LLM activity to function. 
 
 ![Screenshot 2025-02-20 131218](https://github.com/user-attachments/assets/a579eb5b-c636-4819-8cc6-c78a134a051c)
 
