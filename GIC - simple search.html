@@ -1,0 +1,1027 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Sri Lanka Government Information Portal</title>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/marked/9.1.6/marked.min.js"></script>
+    <style>
+        :root {
+            --gov-blue: #1d70b8;
+            --gov-blue-dark: #003078;
+            --gov-text: #0b0c0c;
+            --gov-border: #b1b4b6;
+            --gov-link: #1d70b8;
+            --gov-link-hover: #003078;
+            --gov-bg: #f3f2f1;
+            --gov-white: #ffffff;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
+            line-height: 1.5;
+            margin: 0;
+            color: var(--gov-text);
+            background: var(--gov-white);
+        }
+
+        /* Header styles */
+        .header {
+            background: var(--gov-blue);
+            color: var(--gov-white);
+            padding: 15px 0;
+            border-bottom: 10px solid #b10e1e;
+        }
+
+.header-top {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.logo-container {
+    display: flex;
+    align-items: center;
+    gap: 20px;
+}
+
+.gov-logo {
+    height: 60px;
+    width: auto;
+}
+
+.language-selector {
+    display: flex;
+    gap: 10px;
+}
+
+.lang-link {
+    color: white;
+    text-decoration: none;
+    padding: 5px 10px;
+    border-radius: 4px;
+    font-size: 14px;
+}
+
+.lang-link:hover {
+    background: rgba(255, 255, 255, 0.1);
+}
+
+.lang-link.active {
+    background: rgba(255, 255, 255, 0.2);
+}
+
+        .header-content {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 20px;
+        }
+
+        .header h1 {
+            margin: 0;
+            font-size: 24px;
+            font-weight: 700;
+        }
+
+        .header .subheading {
+            margin-top: 5px;
+            font-size: 19px;
+            color: rgba(255, 255, 255, 0.9);
+        }
+
+        /* Main container */
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 30px 20px;
+            display: grid;
+            grid-template-columns: 300px 1fr;
+            gap: 30px;
+        }
+
+        /* Navigation sidebar */
+        .sidebar {
+            background: var(--gov-white);
+            padding: 20px;
+            border: 1px solid var(--gov-border);
+        }
+
+        .category {
+            margin-bottom: 25px;
+        }
+
+        .category-title {
+            font-size: 19px;
+            font-weight: 700;
+            color: var(--gov-blue-dark);
+            margin-bottom: 15px;
+            padding-bottom: 10px;
+            border-bottom: 2px solid var(--gov-blue);
+        }
+
+        .subcategory {
+            margin-left: 0;
+            margin-bottom: 15px;
+        }
+
+        .subcategory-title {
+            font-weight: 600;
+            font-size: 16px;
+            margin-bottom: 10px;
+            color: var(--gov-text);
+            padding: 5px 10px;
+            border-radius: 4px;
+            transition: background-color 0.2s;
+            cursor: pointer;
+        }
+
+        .subcategory-title:hover {
+            background: var(--gov-bg);
+            color: var(--gov-link);
+        }
+
+        .doc-list {
+            margin-left: 15px;
+        }
+
+        .doc-link {
+            display: block;
+            padding: 8px 10px;
+            margin: 5px 0;
+            color: var(--gov-link);
+            text-decoration: none;
+            border-left: 4px solid transparent;
+            font-size: 16px;
+            cursor: pointer;
+        }
+
+        .doc-link:hover {
+            background: var(--gov-bg);
+            border-left-color: var(--gov-blue);
+            color: var(--gov-link-hover);
+        }
+
+        /* Content area */
+        .content {
+            background: var(--gov-white);
+            padding: 30px;
+            border: 1px solid var(--gov-border);
+        }
+
+        /* Metadata styling */
+.metadata-details {
+    margin-top: 40px;
+    border-top: 1px solid var(--gov-border);
+    padding-top: 20px;
+}
+
+.metadata-details summary {
+    color: #666;
+    cursor: pointer;
+    font-size: 14px;
+    padding: 10px 0;
+    user-select: none;
+}
+
+.metadata-details summary:hover {
+    color: var(--gov-blue);
+}
+
+.metadata {
+    background: #fafafa;
+    padding: 20px;
+    border-radius: 4px;
+    margin-top: 10px;
+    font-size: 14px;
+}
+
+.metadata-item {
+    display: grid;
+    grid-template-columns: 200px 1fr;
+    gap: 10px;
+    margin-bottom: 8px;
+    line-height: 1.4;
+}
+
+.metadata-key {
+    color: #666;
+    font-weight: 500;
+    text-transform: capitalize;
+}
+
+.metadata-value {
+    color: #333;
+}
+
+@media (max-width: 768px) {
+    .metadata-item {
+        grid-template-columns: 1fr;
+        gap: 4px;
+        margin-bottom: 16px;
+    }
+
+    .metadata-key {
+        color: #666;
+        font-size: 12px;
+    }
+}
+        /* Main content styling */
+        .markdown-content h1 {
+            font-size: 36px;
+            margin-top: 0;
+            color: var(--gov-text);
+        }
+
+        .markdown-content h2 {
+            font-size: 24px;
+            margin-top: 45px;
+            color: var(--gov-text);
+        }
+
+        .markdown-content h3 {
+            font-size: 19px;
+            margin-top: 30px;
+        }
+
+        .markdown-content p {
+            font-size: 16px;
+            line-height: 1.6;
+            margin: 15px 0;
+        }
+
+        .markdown-content ul,
+        .markdown-content ol {
+            margin: 15px 0;
+            padding-left: 20px;
+        }
+
+        .markdown-content li {
+            margin-bottom: 10px;
+        }
+
+        /* Loading and error states */
+        .loading {
+            text-align: center;
+            padding: 30px;
+            color: var(--gov-text);
+            font-size: 19px;
+        }
+
+        .error {
+            color: #d4351c;
+            padding: 15px;
+            background: #f6d7d2;
+            border-left: 4px solid #d4351c;
+            margin: 15px 0;
+        }
+
+        /* Sri Lankan flag colors accent */
+        .sl-accent {
+            height: 4px;
+            background: linear-gradient(to right, 
+                #FFBE29 33.33%, /* Yellow */
+                #FF4B3E 33.33%, 66.66%, /* Red */
+                #138808 66.66% /* Green */
+            );
+            margin-bottom: 20px;
+        }
+
+        /* Search container styling */
+        .search-container {
+            background: var(--gov-bg);
+            padding: 20px 0;
+            border-bottom: 1px solid var(--gov-border);
+        }
+
+        .search-content {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 20px;
+        }
+
+        .search-box {
+            display: flex;
+            gap: 10px;
+            max-width: 800px;
+            margin: 0 auto;
+        }
+
+        #search-input {
+            flex: 1;
+            padding: 10px 15px;
+            font-size: 16px;
+            border: 2px solid var(--gov-border);
+            border-radius: 4px;
+        }
+
+        #search-button {
+            padding: 10px 20px;
+            background: var(--gov-blue);
+            color: white;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            font-weight: 600;
+        }
+
+        #search-button:hover {
+            background: var(--gov-blue-dark);
+        }
+
+        #search-results {
+            max-width: 800px;
+            margin: 20px auto 0;
+        }
+
+        .search-result {
+            background: white;
+            padding: 15px;
+            margin: 10px 0;
+            border: 1px solid var(--gov-border);
+            border-radius: 4px;
+            cursor: pointer;
+        }
+
+        .search-result:hover {
+            border-color: var(--gov-blue);
+        }
+
+        .search-result h3 {
+            color: var(--gov-blue);
+            margin: 0 0 5px 0;
+        }
+
+        .search-result p {
+            margin: 0;
+            color: var(--gov-text);
+            font-size: 14px;
+        }
+
+        /* Folder selection styling */
+        .folder-prompt {
+            max-width: 1200px;
+            margin: 40px auto;
+            padding: 40px 20px;
+            background: var(--gov-white);
+            border: 1px solid var(--gov-border);
+            border-radius: 4px;
+            text-align: center;
+        }
+
+        .folder-prompt p {
+            font-size: 19px;
+            color: var(--gov-text);
+            margin-bottom: 30px;
+        }
+
+        #folder-button {
+            padding: 15px 30px;
+            background: var(--gov-blue);
+            color: white;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            font-weight: 600;
+            font-size: 16px;
+            transition: background-color 0.2s;
+        }
+
+        #folder-button:hover {
+            background: var(--gov-blue-dark);
+        }
+
+        /* Loading overlay */
+        .loading-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: rgba(255, 255, 255, 0.95);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            z-index: 1000;
+        }
+
+        .loading-message {
+            padding: 30px 50px;
+            background: white;
+            border-radius: 4px;
+            box-shadow: 0 2px 15px rgba(0, 0, 0, 0.1);
+            font-size: 19px;
+            color: var(--gov-text);
+            border: 1px solid var(--gov-border);
+        }
+
+        /* Responsive design */
+        @media (max-width: 768px) {
+            .container {
+                grid-template-columns: 1fr;
+            }
+
+            .header h1 {
+                font-size: 20px;
+            }
+
+            .header .subheading {
+                font-size: 16px;
+            }
+
+            .sidebar {
+                border-bottom: 2px solid var(--gov-blue);
+                margin-bottom: 20px;
+            }
+
+            .folder-prompt {
+                margin: 20px;
+                padding: 20px;
+            }
+
+.search-result-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: baseline;
+    margin-bottom: 8px;
+}
+
+.search-result-category {
+    font-size: 14px;
+    color: var(--gov-blue);
+    background: var(--gov-bg);
+    padding: 2px 8px;
+    border-radius: 4px;
+}
+
+.search-match-type {
+    display: inline-block;
+    font-size: 12px;
+    color: #505a5f;
+    background: #f3f2f1;
+    padding: 2px 6px;
+    border-radius: 3px;
+    margin-top: 8px;
+}
+        }
+
+/* Footer styles */
+.footer {
+    background: var(--gov-blue-dark);
+    color: white;
+    padding: 40px 0 0 0;
+    margin-top: 60px;
+}
+
+.footer-content {
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 0 20px;
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 40px;
+}
+
+.footer-section h3 {
+    color: white;
+    font-size: 18px;
+    margin-bottom: 20px;
+    padding-bottom: 10px;
+    border-bottom: 2px solid rgba(255, 255, 255, 0.1);
+}
+
+.footer-section ul {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+}
+
+.footer-section ul li {
+    margin-bottom: 10px;
+}
+
+.footer-section a {
+    color: rgba(255, 255, 255, 0.8);
+    text-decoration: none;
+    transition: color 0.2s;
+}
+
+.footer-section a:hover {
+    color: white;
+}
+
+.contact-info li {
+    color: rgba(255, 255, 255, 0.8);
+}
+
+.footer-bottom {
+    margin-top: 40px;
+    padding: 20px 0;
+    background: rgba(0, 0, 0, 0.2);
+}
+
+.footer-bottom .footer-content {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    grid-template-columns: 1fr;
+}
+
+.footer-bottom p {
+    margin: 0;
+    color: rgba(255, 255, 255, 0.6);
+}
+
+.footer-links {
+    display: flex;
+    gap: 20px;
+}
+
+.footer-links a {
+    color: rgba(255, 255, 255, 0.6);
+    text-decoration: none;
+}
+
+.footer-links a:hover {
+    color: white;
+}
+
+/* Responsive footer */
+@media (max-width: 768px) {
+    .footer-content {
+        grid-template-columns: 1fr;
+        gap: 30px;
+    }
+
+    .footer-bottom .footer-content {
+        flex-direction: column;
+        text-align: center;
+        gap: 20px;
+    }
+
+    .footer-links {
+        flex-wrap: wrap;
+        justify-content: center;
+    }
+}
+
+.doc-link.active {
+    background: var(--gov-bg);
+    border-left-color: var(--gov-blue);
+    font-weight: 500;
+}
+
+    </style>
+</head>
+<body>
+<header class="header">
+    <div class="header-content">
+        <div class="header-top">
+            <div class="logo-container">
+                <img src="https://upload.wikimedia.org/wikipedia/commons/thumb/5/5f/Emblem_of_Sri_Lanka.svg/400px-Emblem_of_Sri_Lanka.svg.png" alt="Sri Lanka Government Logo" class="gov-logo">
+                <div class="header-text">
+                    <h1>Sri Lanka Government Information Center</h1>
+                    <div class="subheading">Your guide to official services, documentation and more</div>
+                </div>
+            </div>
+            <div class="language-selector">
+                <a href="#" class="lang-link">සිංහල</a>
+                <a href="#" class="lang-link">தமிழ்</a>
+                <a href="#" class="lang-link active">English</a>
+            </div>
+        </div>
+    </div>
+</header>
+
+    <div class="folder-prompt" id="folder-prompt">
+        <p>Please select your documents folder to begin</p>
+        <input type="file" id="folder-input" webkitdirectory directory multiple style="display: none;">
+        <button id="folder-button">Select Documents Folder</button>
+    </div>
+
+    <div id="main-content" style="display: none;">
+        <div class="search-container">
+            <div class="search-content">
+                <div class="search-box">
+                    <input type="text" id="search-input" placeholder="Search documents...">
+                    <button id="search-button">Search</button>
+                </div>
+                <div id="search-results"></div>
+            </div>
+        </div>
+
+        <div class="sl-accent"></div>
+
+        <div class="container">
+            <div class="sidebar" id="sidebar">
+                <div id="navigation"></div>
+            </div>
+            <main class="content" id="content">
+                <div class="loading">Select a document to view its contents...</div>
+            </main>
+        </div>
+    </div>
+
+
+    <script>
+        let documentFiles = [];
+        const docStructure = {};
+
+        // Initialize folder selection
+        document.getElementById('folder-button').addEventListener('click', () => {
+            document.getElementById('folder-input').click();
+        });
+
+        document.getElementById('folder-input').addEventListener('change', async (event) => {
+            const files = Array.from(event.target.files);
+            if (files.length === 0) return;
+
+            // Show loading overlay
+            const loadingOverlay = document.createElement('div');
+            loadingOverlay.className = 'loading-overlay';
+            loadingOverlay.innerHTML = '<div class="loading-message">Loading documents...</div>';
+            document.body.appendChild(loadingOverlay);
+
+            try {
+                // Store markdown files
+                documentFiles = files.filter(file => file.name.endsWith('.md'));
+                
+                // Process files
+                await processFiles(documentFiles);
+                
+                // Hide prompt, show main content
+                document.getElementById('folder-prompt').style.display = 'none';
+                document.getElementById('main-content').style.display = 'block';
+                
+                // Initialize search
+                initializeSearch();
+            } catch (error) {
+                console.error('Error processing files:', error);
+                alert('Error loading documents. Please try again.');
+            } finally {
+                // Remove loading overlay
+                loadingOverlay.remove();
+            }
+        });
+
+        async function readFileContent(file) {
+            return new Promise((resolve, reject) => {
+                const reader = new FileReader();
+                reader.onload = (e) => resolve(e.target.result);
+                reader.onerror = (e) => reject(e);
+                reader.readAsText(file);
+            });
+        }
+
+        async function processFiles(files) {
+            for (const file of files) {
+                try {
+                    const content = await readFileContent(file);
+                    const lines = content.split('\n');
+                    let category = '';
+                    let subcategory = '';
+                    
+                    for (const line of lines) {
+                        if (line.startsWith('category:')) {
+                            category = line.replace('category:', '').trim();
+                        } else if (line.startsWith('subcategory:')) {
+                            subcategory = line.replace('subcategory:', '').trim();
+                        }
+                        if (category && subcategory) break;
+                    }
+
+                    if (!docStructure[category]) {
+                        docStructure[category] = {};
+                    }
+                    if (!docStructure[category][subcategory]) {
+                        docStructure[category][subcategory] = [];
+                    }
+                    docStructure[category][subcategory].push({
+                        filename: file.name,
+                        file: file
+                    });
+                } catch (error) {
+                    console.error('Error processing file:', file.name, error);
+                }
+            }
+
+            buildNavigation();
+        }
+
+function updateActiveDocument(element) {
+    // Remove active class from all doc links
+    document.querySelectorAll('.doc-link').forEach(link => {
+        link.classList.remove('active');
+    });
+    // Add active class to clicked link
+    element.classList.add('active');
+}
+
+function buildNavigation() {
+    const navHtml = Object.entries(docStructure)
+        .sort(([a], [b]) => a.localeCompare(b))
+        .map(([category, subcategories]) => `
+            <div class="category">
+                <div class="category-title">${category}</div>
+                ${Object.entries(subcategories)
+                    .sort(([a], [b]) => a.localeCompare(b))
+                    .map(([subcategory, docs]) => {
+                        // Get the first document's filename
+                        const firstDoc = docs[0]?.filename || '';
+                        return `
+                            <div class="subcategory">
+                                <div class="subcategory-title" 
+                                     onclick="handleSubcategoryClick('${category}', '${subcategory}', '${firstDoc}')" 
+                                     style="cursor: pointer;">
+                                    ${subcategory}
+                                </div>
+                                <div class="doc-list" id="docs-${category}-${subcategory}" style="display: none;">
+                                    ${docs
+                                        .sort((a, b) => a.filename.localeCompare(b.filename))
+                                        .map((doc, index) => `
+                                            <a class="doc-link ${index === 0 ? 'first-doc' : ''}" 
+                                               onclick="displayDocument('${doc.filename}'); updateActiveDocument(this);"
+                                               style="cursor: pointer;">
+                                                ${doc.filename.replace('.md', '').replace(/_/g, ' ')}
+                                            </a>
+                                        `).join('')}
+                                </div>
+                            </div>
+                        `;
+                    }).join('')}
+            </div>
+        `).join('');
+
+    document.getElementById('navigation').innerHTML = navHtml;
+}
+
+        let currentlyActiveSubcategory = null;
+
+function handleSubcategoryClick(category, subcategory, firstDocPath) {
+    const docListId = `docs-${category}-${subcategory}`;
+    const docList = document.getElementById(docListId);
+    
+    // If there's a currently active subcategory, hide its documents
+    if (currentlyActiveSubcategory && currentlyActiveSubcategory !== docListId) {
+        document.getElementById(currentlyActiveSubcategory).style.display = 'none';
+    }
+    
+    // Toggle visibility of clicked subcategory's documents
+    if (docList) {
+        if (docList.style.display === 'none') {
+            docList.style.display = 'block';
+            currentlyActiveSubcategory = docListId;
+            // Load the first document when opening a subcategory
+            displayDocument(firstDocPath);
+            
+            // Highlight the first document link
+            const firstDocLink = docList.querySelector('.doc-link');
+            if (firstDocLink) {
+                // Remove any existing active states
+                document.querySelectorAll('.doc-link.active').forEach(link => {
+                    link.classList.remove('active');
+                });
+                firstDocLink.classList.add('active');
+            }
+        } else {
+            docList.style.display = 'none';
+            currentlyActiveSubcategory = null;
+        }
+    }
+}
+
+        async function displayDocument(filename) {
+            const contentDiv = document.getElementById('content');
+            contentDiv.innerHTML = '<div class="loading">Loading document...</div>';
+try {
+                const file = documentFiles.find(f => f.name === filename);
+                if (!file) throw new Error('Document not found');
+        const fileContent = await readFileContent(file);
+        const lines = fileContent.split('\n');
+        let metadataContent = [];
+        let mainContent = [];
+        let isMetadata = false;
+        
+        for (const line of lines) {
+            if (line.trim() === '---') {
+                isMetadata = !isMetadata;
+                continue;
+            }
+            
+            if (isMetadata) {
+                if (line.trim().startsWith('geographic_scope:')) {
+                    metadataContent.push('\n' + line);
+                } else {
+                    metadataContent.push(line);
+                }
+            } else {
+                mainContent.push(line);
+            }
+        }
+
+        // Create metadata HTML with more structured format
+        const metadataHtml = metadataContent.length > 0 ? `
+            <details class="metadata-details">
+                <summary>Document Metadata</summary>
+                <div class="metadata">
+                    ${formatMetadata(metadataContent.join('\n'))}
+                </div>
+            </details>
+        ` : '';
+
+        // Convert main content to HTML
+        const mainHtml = marked.parse(mainContent.join('\n'));
+
+        // Combine with metadata at the bottom
+        contentDiv.innerHTML = `
+            <div class="markdown-content">
+                ${mainHtml}
+            </div>
+            ${metadataHtml}
+        `;
+    } catch (error) {
+        contentDiv.innerHTML = `<div class="error">Error loading document: ${error.message}</div>`;
+    }
+}
+
+// Helper function to format metadata nicely
+function formatMetadata(metadataText) {
+    const metadata = {};
+    metadataText.split('\n').forEach(line => {
+        if (line.includes(':')) {
+            const [key, value] = line.split(':');
+            if (key && value) {
+                metadata[key.trim()] = value.trim();
+            }
+        }
+    });
+
+    return Object.entries(metadata)
+        .map(([key, value]) => `
+            <div class="metadata-item">
+                <span class="metadata-key">${key}:</span>
+                <span class="metadata-value">${value}</span>
+            </div>
+        `).join('');
+}        function initializeSearch() {
+            const searchInput = document.getElementById('search-input');
+            const searchButton = document.getElementById('search-button');
+            const searchResults = document.getElementById('search-results');
+
+async function performSearch() {
+    const query = searchInput.value.toLowerCase().trim();
+    if (!query) return;
+
+    searchResults.innerHTML = '<div class="search-loading">Searching...</div>';
+
+    try {
+        const results = [];
+        
+        for (const file of documentFiles) {
+            const content = await readFileContent(file);
+            
+            // Split content into frontmatter and main content
+            const parts = content.split('---');
+            const frontmatter = parts[1] || '';
+            const mainContent = parts.length >= 3 ? parts[2].trim() : content;
+            
+            // Parse metadata
+            let category = '';
+            let subcategory = '';
+            frontmatter.split('\n').forEach(line => {
+                if (line.startsWith('category:')) {
+                    category = line.replace('category:', '').trim();
+                } else if (line.startsWith('subcategory:')) {
+                    subcategory = line.replace('subcategory:', '').trim();
+                }
+            });
+
+            // Check different types of matches
+            const matchTypes = {
+                subcategory: subcategory.toLowerCase().includes(query),
+                title: file.name.toLowerCase().includes(query),
+                content: mainContent.toLowerCase().includes(query)
+            };
+            
+            if (matchTypes.subcategory || matchTypes.title || matchTypes.content) {
+                // Find the context of the search term in the main content
+                let preview = '';
+                if (matchTypes.content) {
+                    const index = mainContent.toLowerCase().indexOf(query);
+                    const start = Math.max(0, index - 50);
+                    const end = Math.min(mainContent.length, index + 150);
+                    preview = mainContent.slice(start, end);
+                    if (start > 0) preview = '...' + preview;
+                    if (end < mainContent.length) preview = preview + '...';
+                } else {
+                    preview = mainContent.slice(0, 150) + '...';
+                }
+
+                results.push({
+                    name: file.name.replace('.md', '').replace(/_/g, ' '),
+                    filename: file.name,
+                    preview: preview,
+                    category: category,
+                    subcategory: subcategory,
+                    matchType: matchTypes
+                });
+            }
+        }
+
+        if (results.length === 0) {
+            searchResults.innerHTML = `
+                <div class="no-results">
+                    No results found for "${searchInput.value}"
+                </div>
+            `;
+            return;
+        }
+
+        // Sort results by relevance
+        results.sort((a, b) => {
+            // Prioritize subcategory matches
+            if (a.matchType.subcategory && !b.matchType.subcategory) return -1;
+            if (!a.matchType.subcategory && b.matchType.subcategory) return 1;
+            // Then title matches
+            if (a.matchType.title && !b.matchType.title) return -1;
+            if (!a.matchType.title && b.matchType.title) return 1;
+            return 0;
+        });
+
+        searchResults.innerHTML = results.map(result => `
+            <div class="search-result" onclick="displayDocument('${result.filename}')" style="cursor: pointer;">
+                <div class="search-result-header">
+                    <h3>${result.name}</h3>
+                    <span class="search-result-category">${result.category} → ${result.subcategory}</span>
+                </div>
+                <p>${result.preview}</p>
+                ${result.matchType.subcategory ? 
+                    '<span class="search-match-type">Matches subcategory</span>' : ''}
+            </div>
+        `).join('');
+
+    } catch (error) {
+        console.error('Search error:', error);
+        searchResults.innerHTML = `
+            <div class="error">
+                Error performing search: ${error.message}
+            </div>
+        `;
+    }
+}
+            searchButton.addEventListener('click', performSearch);
+            searchInput.addEventListener('keypress', (e) => {
+                if (e.key === 'Enter') performSearch();
+            });
+        }
+
+        // Make functions globally available
+        window.handleSubcategoryClick = handleSubcategoryClick;
+        window.displayDocument = displayDocument;
+    </script>
+
+<footer class="footer">
+    <div class="footer-content">
+        <div class="footer-section">
+            <h3>Quick Links</h3>
+            <ul>
+                <li><a href="https://www.president.gov.lk/">President's Office</a></li>
+                <li><a href="https://www.parliament.lk/">Parliament</a></li>
+                <li><a href="https://www.judiciary.lk/">Judiciary</a></li>
+                <li><a href="https://www.gov.lk/gov/directory.jsp">Government Directory</a></li>
+            </ul>
+        </div>
+        <div class="footer-section">
+            <h3>Departments</h3>
+            <ul>
+                <li><a href="#">Department of Immigration</a></li>
+                <li><a href="#">Department of Registration</a></li>
+                <li><a href="#">Department of Census</a></li>
+                <li><a href="#">View All Departments</a></li>
+            </ul>
+        </div>
+        <div class="footer-section">
+            <h3>Contact Information</h3>
+            <ul class="contact-info">
+                <li>Government Information Center</li>
+                <li>Colombo 01, Sri Lanka</li>
+                <li>Tel: 1919 (Local)</li>
+                <li>Tel: +94 112 324 464 (International)</li>
+                <li>Email: info@gic.gov.lk</li>
+            </ul>
+        </div>
+    </div>
+    <div class="footer-bottom">
+        <div class="footer-content">
+            <p>© 2025 Government of Sri Lanka. All Rights Reserved.</p>
+            <div class="footer-links">
+                <a href="#">Privacy Policy</a>
+                <a href="#">Terms of Use</a>
+                <a href="#">Accessibility</a>
+                <a href="#">Sitemap</a>
+            </div>
+        </div>
+    </div>
+</footer>
+</body>
+</html>
