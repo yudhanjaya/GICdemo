@@ -624,89 +624,237 @@
 
 
     <script>
-        let documentFiles = [];
-        const docStructure = {};
+let documentIndex;  // Declare the index
+let documentFiles = [];
+const docStructure = {};
 
-        // Initialize folder selection
-        document.getElementById('folder-button').addEventListener('click', () => {
-            document.getElementById('folder-input').click();
+document.addEventListener('DOMContentLoaded', function() {
+    const folderButton = document.getElementById('folder-button');
+    const folderInput = document.getElementById('folder-input');
+    
+    if (folderButton && folderInput) {
+        folderButton.addEventListener('click', () => {
+            folderInput.click();
         });
+    } else {
+        console.error('Folder button or input not found');
+    }
+});
 
-        document.getElementById('folder-input').addEventListener('change', async (event) => {
-            const files = Array.from(event.target.files);
-            if (files.length === 0) return;
+class DocumentIndex {
+    constructor() {
+        this.documents = [];
+        this.index = {};
+        this.metadata = new Map();
+    }
 
-            // Show loading overlay
-            const loadingOverlay = document.createElement('div');
-            loadingOverlay.className = 'loading-overlay';
-            loadingOverlay.innerHTML = '<div class="loading-message">Loading documents...</div>';
-            document.body.appendChild(loadingOverlay);
-
-            try {
-                // Store markdown files
-                documentFiles = files.filter(file => file.name.endsWith('.md'));
-                
-                // Process files
-                await processFiles(documentFiles);
-                
-                // Hide prompt, show main content
-                document.getElementById('folder-prompt').style.display = 'none';
-                document.getElementById('main-content').style.display = 'block';
-                
-                // Initialize search
-                initializeSearch();
-            } catch (error) {
-                console.error('Error processing files:', error);
-                alert('Error loading documents. Please try again.');
-            } finally {
-                // Remove loading overlay
-                loadingOverlay.remove();
-            }
-        });
-
-        async function readFileContent(file) {
-            return new Promise((resolve, reject) => {
-                const reader = new FileReader();
-                reader.onload = (e) => resolve(e.target.result);
-                reader.onerror = (e) => reject(e);
-                reader.readAsText(file);
+    async addDocument(file) {
+        try {
+            const content = await readFileContent(file);
+            const doc = {
+                id: Math.random().toString(36).substr(2, 9), // Simple unique ID
+                filename: file.name,
+                content: content,
+                metadata: this.extractMetadata(content)
+            };
+            
+            // Create searchable tokens
+            const tokens = this.tokenizeContent(content);
+            
+            // Add to inverted index
+            tokens.forEach(token => {
+                if (!this.index[token]) {
+                    this.index[token] = new Set();
+                }
+                this.index[token].add(doc.id);
             });
+            
+            this.documents.push(doc);
+            this.metadata.set(doc.id, doc.metadata);
+            
+            return doc.id;
+        } catch (error) {
+            console.error(`Error indexing document ${file.name}:`, error);
+            throw new Error(`Failed to index document ${file.name}`);
         }
+    }
 
-        async function processFiles(files) {
-            for (const file of files) {
-                try {
-                    const content = await readFileContent(file);
-                    const lines = content.split('\n');
-                    let category = '';
-                    let subcategory = '';
-                    
-                    for (const line of lines) {
-                        if (line.startsWith('category:')) {
-                            category = line.replace('category:', '').trim();
-                        } else if (line.startsWith('subcategory:')) {
-                            subcategory = line.replace('subcategory:', '').trim();
-                        }
-                        if (category && subcategory) break;
-                    }
-
-                    if (!docStructure[category]) {
-                        docStructure[category] = {};
-                    }
-                    if (!docStructure[category][subcategory]) {
-                        docStructure[category][subcategory] = [];
-                    }
-                    docStructure[category][subcategory].push({
-                        filename: file.name,
-                        file: file
-                    });
-                } catch (error) {
-                    console.error('Error processing file:', file.name, error);
+    extractMetadata(content) {
+        const metadata = {};
+        const lines = content.split('\n');
+        let inMetadataBlock = false;
+        
+        for (const line of lines) {
+            if (line.trim() === '---') {
+                inMetadataBlock = !inMetadataBlock;
+                continue;
+            }
+            
+            if (inMetadataBlock && line.includes(':')) {
+                const [key, value] = line.split(':').map(s => s.trim());
+                if (key && value) {
+                    metadata[key] = value;
                 }
             }
-
-            buildNavigation();
         }
+        
+        return metadata;
+    }
+
+    tokenizeContent(content) {
+        return content.toLowerCase()
+            .replace(/[^\w\s]/g, ' ')
+            .split(/\s+/)
+            .filter(token => token.length > 2);
+    }
+
+    async search(query) {
+        try {
+            const queryTokens = this.tokenizeContent(query);
+            const scores = new Map();
+            
+            // Score documents based on token matches
+            queryTokens.forEach(token => {
+                if (this.index[token]) {
+                    this.index[token].forEach(docId => {
+                        scores.set(docId, (scores.get(docId) || 0) + 1);
+                    });
+                }
+            });
+            
+            // Get documents with scores above threshold
+            const threshold = Math.max(1, queryTokens.length * 0.3); // At least one token must match
+            const relevantDocs = Array.from(scores.entries())
+                .filter(([_, score]) => score >= threshold)
+                .sort(([, a], [, b]) => b - a)
+                .map(([docId]) => this.documents.find(doc => doc.id === docId))
+                .filter(Boolean);
+            
+            return relevantDocs;
+        } catch (error) {
+            console.error('Search error:', error);
+            throw new Error('Failed to perform search');
+        }
+    }
+}
+
+        // Initialize folder selection
+document.getElementById('folder-input').addEventListener('change', async (event) => {
+    const files = Array.from(event.target.files);
+    if (files.length === 0) return;
+
+    // Show loading overlay
+    const loadingOverlay = document.createElement('div');
+    loadingOverlay.className = 'loading-overlay';
+    loadingOverlay.innerHTML = '<div class="loading-message">Loading documents...</div>';
+    document.body.appendChild(loadingOverlay);
+
+    try {
+        // Initialize document index
+        window.documentIndex = new DocumentIndex();
+        
+        // Store markdown files
+        documentFiles = files.filter(file => file.name.endsWith('.md'));
+        
+        if (documentFiles.length === 0) {
+            throw new Error('No markdown files found in the selected folder');
+        }
+        
+        // Process files
+        await processFiles(documentFiles);
+        
+        // Hide prompt, show main content
+        document.getElementById('folder-prompt').style.display = 'none';
+        document.getElementById('main-content').style.display = 'block';
+        
+        // Initialize search
+        initializeSearch();
+    } catch (error) {
+        console.error('Error processing files:', error);
+        alert(`Error loading documents: ${error.message}`);
+    } finally {
+        // Remove loading overlay
+        loadingOverlay.remove();
+    }
+});
+
+async function readFileContent(file) {
+    return new Promise((resolve, reject) => {
+        if (!file) {
+            reject(new Error('No file provided'));
+            return;
+        }
+
+        const reader = new FileReader();
+        
+        reader.onload = (e) => {
+            try {
+                const content = e.target.result;
+                if (typeof content !== 'string') {
+                    reject(new Error('Invalid file content'));
+                    return;
+                }
+                resolve(content);
+            } catch (error) {
+                reject(new Error(`Error reading file content: ${error.message}`));
+            }
+        };
+        
+        reader.onerror = (e) => {
+            reject(new Error(`Error reading file: ${reader.error}`));
+        };
+
+        try {
+            reader.readAsText(file);
+        } catch (error) {
+            reject(new Error(`Error starting file read: ${error.message}`));
+        }
+    });
+}
+
+        async function processFiles(files) {
+    // Initialize document index if not already done
+    if (!documentIndex) {
+        documentIndex = new DocumentIndex();
+    }
+    
+    for (const file of files) {
+        try {
+            // Add to document index
+            await documentIndex.addDocument(file);
+            
+            // Get content for navigation structure
+            const content = await readFileContent(file);
+            const lines = content.split('\n');
+            let category = '';
+            let subcategory = '';
+            
+            for (const line of lines) {
+                if (line.startsWith('category:')) {
+                    category = line.replace('category:', '').trim();
+                } else if (line.startsWith('subcategory:')) {
+                    subcategory = line.replace('subcategory:', '').trim();
+                }
+                if (category && subcategory) break;
+            }
+
+            if (!docStructure[category]) {
+                docStructure[category] = {};
+            }
+            if (!docStructure[category][subcategory]) {
+                docStructure[category][subcategory] = [];
+            }
+            docStructure[category][subcategory].push({
+                filename: file.name,
+                file: file
+            });
+        } catch (error) {
+            console.error('Error processing file:', file.name, error);
+        }
+    }
+
+    buildNavigation();
+}
 
 function updateActiveDocument(element) {
     // Remove active class from all doc links
@@ -894,17 +1042,10 @@ async function performSearch() {
 }
 
 async function getRelevantDocuments(query) {
-  const relevantDocs = [];
-  for (const file of documentFiles) {
-    const content = await readFileContent(file);
-    if (content.toLowerCase().includes(query)) {
-      relevantDocs.push({
-        filename: file.name,
-        content: content
-      });
+    if (!documentIndex) {
+        throw new Error('Document index not initialized');
     }
-  }
-  return relevantDocs;
+    return await documentIndex.search(query);
 }
 
 async function getClaudeResponse(query, docs) {
@@ -924,7 +1065,7 @@ async function getClaudeResponse(query, docs) {
    const response = await fetch('https://api.anthropic.com/v1/messages', {
      method: 'POST',
      headers: {
-       "x-api-key": "API key here",
+       "x-api-key": "API-key-here",
        "anthropic-version": "2023-06-01",
        "content-type": "application/json",
        "anthropic-dangerous-direct-browser-access": "true",
