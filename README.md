@@ -2,14 +2,16 @@
 
 ![Screenshot 2025-02-21 103851](https://github.com/user-attachments/assets/ced89e1d-cae8-4556-960b-cb51b786b9bf)
 
-This is a simple prototype showing an easier-to-user government information center (GIC, Sri Lanka) using a new AI-assisted content review policy and RAG search on top. Various procedures from the GIC have been rewritten to be clearer and are available in the docs folder (their old version are available in the originaldocs folder). 
+This is a simple prototype showing an easier-to-user government information center (GIC, Sri Lanka) using a new AI-assisted content review policy and RAG search on top. Various procedures from the GIC have been rewritten to be clearer and are available in the docs folder (their old version are available in the originaldocs folder). It also contains some idealized guidelines (see guidelines folder) that are written as a general standard we should adhere to. These guidelines do not match current processes. The content guidelines were used to turn the originaldocs into docs. 
 
-It also contains some idealized guidelines (see guidelines folder) that are written as a general standard we should adhere to. These guidelines do not match current processes. The content guidelines were used to turn the originaldocs into docs. 
-
-Each guide not only contains information, but document metadata as follows.
+All in all, we have here
+- 623 base documents (docs)
+- 3 content guidelines (guidelines - one for how to write, one for visual design, and the other for the management and maintenance of information)
+- 624 original documents (originaldocs) - inbound
+  
+Each doc not only contains information, but metadata as follows.
 
 ![Screenshot 2025-02-20 131336](https://github.com/user-attachments/assets/2d8791da-a062-4899-9f43-32e1debed0e2)
-
 
 On top of these is a simple HTML file that access a bunch of markdown locally and uses Anthropic's Claude to present a basic Retrieval Augmented Generation (RAG) for government information; for comparison purposes, I also present here the simple search variant that does not need any LLM activity to function. 
 
