@@ -7,22 +7,27 @@ import time
 from typing import Tuple, Optional
 
 class ContentValidator:
-    def __init__(self, guidelines_file: str, api_key: str, output_dir: str, logs_dir: str = "validationlogs"):
+    def __init__(self, guidelines_file: str, api_key: str, input_dir: str, validated_dir: str = "validatedoutputs", logs_dir: str = "validationlogs"):
         """
         Initialize the content validator.
         
         Args:
             guidelines_file (str): Path to the file containing content guidelines
             api_key (str): Anthropic API key for Claude access
-            output_dir (str): Directory containing files to validate
+            input_dir (str): Directory containing files to validate
+            validated_dir (str): Directory where validated files will be saved
             logs_dir (str): Directory where validation logs will be saved
         """
         self.guidelines = self._load_guidelines(guidelines_file)
         self.anthropic = Anthropic(api_key=api_key)
         self.logger = self._setup_logger()
-        self.output_dir = output_dir
+        self.input_dir = input_dir
         
-        # Create logs directory if it doesn't exist
+        # Create validated outputs directory
+        self.validated_dir = validated_dir
+        os.makedirs(self.validated_dir, exist_ok=True)
+        
+        # Create logs directory
         self.logs_dir = logs_dir
         os.makedirs(self.logs_dir, exist_ok=True)
         
@@ -195,7 +200,7 @@ Please preserve the existing title from the Core Identification section."""
         """
         try:
             # Get list of markdown files
-            markdown_files = [f for f in os.listdir(self.output_dir) 
+            markdown_files = [f for f in os.listdir(self.input_dir) 
                             if f.endswith(('.md', '.markdown'))]
             
             self.logger.info(f"Starting to validate {len(markdown_files)} markdown files")
@@ -209,8 +214,8 @@ Please preserve the existing title from the Core Identification section."""
                     self.logger.info(f"\nValidating file: {filename}")
                     
                     # Read file content
-                    filepath = os.path.join(self.output_dir, filename)
-                    with open(filepath, 'r', encoding='utf-8') as f:
+                    input_path = os.path.join(self.input_dir, filename)
+                    with open(input_path, 'r', encoding='utf-8') as f:
                         content = f.read()
                     
                     if not content:
@@ -221,8 +226,14 @@ Please preserve the existing title from the Core Identification section."""
                     # Validate and rewrite if needed
                     rewritten = self.rewrite_if_needed(content, filename)
                     
+                    # Path for the validated output
+                    validated_path = os.path.join(self.validated_dir, filename)
+                    
                     if rewritten is None:
                         self.logger.info(f"File {filename} is valid")
+                        # Copy valid file to validated outputs
+                        with open(validated_path, 'w', encoding='utf-8') as f:
+                            f.write(content)
                         files_checked += 1
                         continue
                     
@@ -239,15 +250,11 @@ Please preserve the existing title from the Core Identification section."""
                         f.write(diff)
                         f.write("\n")
                     
-                    # Create backup of original file
-                    backup_path = filepath + '.bak'
-                    os.rename(filepath, backup_path)
-                    
-                    # Write new content
-                    with open(filepath, 'w', encoding='utf-8') as f:
+                    # Write rewritten content to validated outputs
+                    with open(validated_path, 'w', encoding='utf-8') as f:
                         f.write(rewritten)
                     
-                    self.logger.info(f"Rewrote file {filename} (backup saved as {filename}.bak)")
+                    self.logger.info(f"Rewrote file {filename} to {validated_path}")
                     files_rewritten += 1
                     
                 except Exception as e:
@@ -260,6 +267,7 @@ Please preserve the existing title from the Core Identification section."""
             self.logger.info(f"Valid files (no rewrite needed): {files_checked}")
             self.logger.info(f"Files rewritten: {files_rewritten}")
             self.logger.info(f"Files failed: {files_failed}")
+            self.logger.info(f"All validated files saved to: {self.validated_dir}")
             
         except Exception as e:
             self.logger.error(f"Error in validate_files: {str(e)}")
@@ -277,7 +285,7 @@ def read_api_key(key_file: str) -> str:
 
 
 def main():
-    """Example usage of the ContentValidator class."""
+  
     # Read API key from file
     api_key = read_api_key('api_key.txt')
     if not api_key:
@@ -287,11 +295,12 @@ def main():
     validator = ContentValidator(
         'guidelines.txt',
         api_key,
-        'output',  # Directory containing files to validate
+        'output',  # Directory containing input files to validate
+        'validatedoutputs',  # Directory for validated files
         'validationlogs'  # Directory for validation logs
     )
     
-    # Validate files and rewrite if needed
+    # Validate files and save to validatedoutputs
     validator.validate_files()
 
 
