@@ -4,12 +4,6 @@ This is a simple prototype showing an easier-to-user government information cent
 
 It distills the procedures of various government instutes into simple guides. As befits a demo, it's a simple HTML file that access a bunch of markdown locally. Uses Anthropic's Claude; for comparison purposes, I also present here the simple search variant that does not need any LLM activity to function. 
 
-![Screenshot 2025-02-20 131218](https://github.com/user-attachments/assets/a579eb5b-c636-4819-8cc6-c78a134a051c)
-
-
-Update: now responds to natural language questions.
-
-
 ![Screenshot 2025-02-21 103851](https://github.com/user-attachments/assets/ced89e1d-cae8-4556-960b-cb51b786b9bf)
 
 
@@ -25,3 +19,7 @@ Each guide not only contains information, but document metadata as follows.
 ![Screenshot 2025-02-20 131336](https://github.com/user-attachments/assets/2d8791da-a062-4899-9f43-32e1debed0e2)
 
 This is only meant for prototype / showcase purposes. This information is not vetted for accuracy, nor is this a complete setup of any kind. To use this code, you'll need to download the folder, and add your Claude API key in the "GIC - llm search.html" file. Look for the words "API-key-here" and replace them with your Anthropic key. 
+
+This repo also contains content guidelines, meant to help shape the large amounts of existing, scattershot and variable-quality information into consistent and useful information from a citizen's perspective. The ideal flow is something as follows:
+
+![image](https://github.com/user-attachments/assets/a4e0ff41-1941-4b44-963a-402431c2edd9)
