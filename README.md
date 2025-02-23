@@ -25,3 +25,12 @@ The python scripts (rewriter_lite.py and validator.py) are first steps in this r
 
 ![image](https://github.com/user-attachments/assets/dab42ad2-d3a9-443e-bc75-ee8a7dea886a)
 
+
+And it's run through the validator before upload. 
+
+
+![image](https://github.com/user-attachments/assets/6126896a-5a35-445b-bfd5-22645a652c15)
+
+Ideally this stuff becomes part of a better-designed, actual deployment down the line. Right now, these are just proofs of concept.
+
+
