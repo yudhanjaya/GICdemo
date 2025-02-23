@@ -8,7 +8,9 @@ All in all, we have here
 - 623 base documents (docs)
 - 3 content guidelines (guidelines - one for how to write, one for visual design, and the other for the management and maintenance of information)
 - 624 original documents (originaldocs) - inbound
-  
+- 
+I'm defaulting to English here, because this stuff is easier to prototype in English.
+
 Each doc not only contains information, but metadata as follows.
 
 ![Screenshot 2025-02-20 131336](https://github.com/user-attachments/assets/2d8791da-a062-4899-9f43-32e1debed0e2)
