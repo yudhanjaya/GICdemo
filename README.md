@@ -20,3 +20,5 @@ This is only meant for prototype / showcase purposes. This information is not to
 This repo also contains content guidelines, meant to help shape the large amounts of existing, scattershot and variable-quality information into consistent and useful information from a citizen's perspective. The ideal flow is something as follows:
 
 ![image](https://github.com/user-attachments/assets/a4e0ff41-1941-4b44-963a-402431c2edd9)
+
+The python scripts (rewriter_lite.py and validator.py) are first steps in this rewriter->validate chain. Rewriter_lite was used to write the content in the docs folder. Both scripts need guidelines.txt (the distilled instructions for rewriting and content quality), a text file containing your api key, and appropritate input and output folders - check the code for the exact values needed. 
