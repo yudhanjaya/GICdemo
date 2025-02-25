@@ -7,7 +7,7 @@ This is a simple prototype showing an easier-to-user government information cent
 All in all, we have here
 - 623 base documents (docs)
 - 3 content guidelines (guidelines - one for how to write, one for visual design, and the other for the management and maintenance of information)
-- 624 original documents (originaldocs) - inbound
+- 624 original documents (originaldocs)
 
 I'm defaulting to English here, because this stuff is easier to prototype in English.
 
